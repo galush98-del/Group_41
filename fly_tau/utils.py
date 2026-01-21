@@ -656,34 +656,64 @@ class Flight:
             # if not found, return none
             return None
 
-    def create_flight_in_db(self, pilots_str, attendants_str, economy_price, business_price):
-        # Called by the `create_flight_pricing` route in `main.py` to execute the final
-        # database transaction. It generates a unique flight number, inserts the flight
-        # record, and assigns crew members, while handling concurrency errors (overlapping flights).
+    def create_flight_in_db(self, pilots_str, attendants_str, economy_price, business_price):  
+        # --- Validation: Check if prices are valid numbers ---
         try:
             eco = float(economy_price)
             bus = float(business_price)
         except:
             raise Exception("Invalid price values. Please enter numeric prices.")
 
+        # --- Parsing: Convert comma-separated strings to lists and clean whitespace ---
         pilots_ids = [p.strip() for p in (pilots_str or "").split(",") if p.strip()]
         attendants_ids = [a.strip() for a in (attendants_str or "").split(",") if a.strip()]
 
+        # --- Validation: Ensure crew is selected ---
         if not pilots_ids:
             raise Exception("No pilots selected.")
         if not attendants_ids:
             raise Exception("No attendants selected.")
 
         with db_cur() as cur:
+            # --- Logic Replacement 1: Calculate Landing Time (previously handled by SQL Trigger) ---
+            # We fetch the duration from the database to calculate the exact landing time in Python.
+            cur.execute("""
+                SELECT total_duration_minutes
+                FROM flightdurations
+                WHERE origin_airport_name = %s AND dest_airport_name = %s
+            """, (self.origin_airport, self.destination_airport))
+            
+            row = cur.fetchone()
+            if not row:
+                raise Exception("Flight duration not found for this route.")
+            
+            duration_minutes = row[0]
+            self.landing_time = self.departure_time + timedelta(minutes=duration_minutes)
+
+            # --- Logic Replacement 2: Check for Airplane Overlap (previously handled by SQL Trigger) ---
+            # We check if the selected airplane is already assigned to another flight 
+            # that overlaps with the calculated time window.
+            cur.execute("""
+                SELECT 1 FROM Flights 
+                WHERE airplane_id = %s 
+                AND departure_time < %s 
+                AND arrival_time > %s
+            """, (self.airplane_id, self.landing_time, self.departure_time))
+            
+            if cur.fetchone():
+                 raise Exception("The selected airplane was taken by another overlapping flight. Please choose a different airplane.")
+
+            # --- Insertion: Create the flight record (including the calculated arrival_time) ---
+            # We attempt to generate a unique flight number up to 30 times.
             for _ in range(30):
                 flight_no = generate_flight_no()
                 try:
                     insert_flight = """
                         INSERT INTO Flights
                           (flight_no, airplane_id, origin_airport_name, dest_airport_name,
-                           departure_time, status, economy_price, business_price)
+                           departure_time, arrival_time, status, economy_price, business_price)
                         VALUES
-                          (%s, %s, %s, %s, %s, 'Active', %s, %s)
+                          (%s, %s, %s, %s, %s, %s, 'Active', %s, %s)
                     """
                     cur.execute(insert_flight, (
                         flight_no,
@@ -691,32 +721,23 @@ class Flight:
                         self.origin_airport,
                         self.destination_airport,
                         self.departure_time,
+                        self.landing_time, # Crucial: Inserting the Python-calculated time
                         float(economy_price),
                         float(business_price)
                     ))
-                    break
+                    break # Insert successful, exit loop
 
                 except Exception as e:
                     msg = str(e)
-
+                    # Handle collision of the random flight number
                     if "Duplicate entry" in msg or "1062" in msg:
                         continue
-
-                    if "Airplane is already assigned" in msg:
-                        raise Exception(
-                            "The selected airplane was taken by another overlapping flight. "
-                            "Please choose a different airplane."
-                        )
-
-                    raise
-
+                    raise e # Raise any other database error
             else:
+                # If the loop completes without 'break', we failed to find a unique ID
                 raise Exception("Could not generate unique flight number. Please try again.")
 
-            # INSERT pilots / attendants
-            pilots_ids = [p.strip() for p in (pilots_str or "").split(",") if p.strip()]
-            attendants_ids = [a.strip() for a in (attendants_str or "").split(",") if a.strip()]
-
+            # --- Assignment: Insert pilots and attendants into their respective link tables ---
             for pid in pilots_ids:
                 cur.execute("INSERT INTO PilotsInFlights (pilot_id, flight_no) VALUES (%s, %s)", (pid, flight_no))
 
@@ -1135,3 +1156,4 @@ def is_luhn_valid(card_digits: str) -> bool:
                 d -= 9
         total += d
     return total % 10 == 0
+
