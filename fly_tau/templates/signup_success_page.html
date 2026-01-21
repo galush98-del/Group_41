@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Registration Successful | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card success-card">
+  <h1 class="page-title">Registration completed</h1>
+  <p class="subtitle">Thank you for signing up, {{ name }}.</p>
+
+  <div class="form-actions">
+    <a href="/customer_linktree" class="btn">Go to home page</a>
+  </div>
+</section>
+{% endblock %}

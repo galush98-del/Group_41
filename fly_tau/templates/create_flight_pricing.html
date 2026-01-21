@@ -1,0 +1,55 @@
+{% extends "base.html" %}
+
+{% block title %}Set Pricing | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card wizard-card">
+  <h1 class="page-title">Set flight pricing</h1>
+
+  <div class="info-box">
+    <div><b>Origin:</b> {{ origin }}</div>
+    <div><b>Destination:</b> {{ destination }}</div>
+    <div><b>Departure:</b> {{ flight_date }}</div>
+    <div><b>Airplane:</b> {{ airplane_id }}   {% if is_large %}
+    <span>(large)</span>
+  {% else %}
+    <span>(small)</span>
+  {% endif %}</div>
+    {% if duration_hours is not none %}
+      <div><b>Duration:</b> {{ duration_hours }} hours</div>
+    {% endif %}
+  </div>
+
+  {% if error %}
+    <div class="error-box">{{ error }}</div>
+  {% endif %}
+
+  <form method="POST" class="form form-narrow">
+    <input type="hidden" name="origin" value="{{ origin }}">
+    <input type="hidden" name="destination" value="{{ destination }}">
+    <input type="hidden" name="flight_date" value="{{ flight_date }}">
+    <input type="hidden" name="airplane_id" value="{{ airplane_id }}">
+    <input type="hidden" name="pilots" value="{{ pilots_str }}">
+    <input type="hidden" name="attendants" value="{{ attendants_str }}">
+
+    <label for="eco_price">Economy price ($)</label>
+    <input id="eco_price" name="economy_price" type="number" min="0" step="0.01" required>
+
+    {% if is_large == 1 %}
+      <label for="bus_price">Business price ($)</label>
+      <input id="bus_price" name="business_price" type="number" min="0" step="0.01" required>
+    {% else %}
+      <input type="hidden" name="business_price" value="0">
+      <div class="info-box" style="margin-top:12px;">
+        This airplane has Economy class only (no Business class).
+      </div>
+    {% endif %}
+
+    <button type="submit" class="btn btn-block">Create flight</button>
+
+    <div class="footer-links">
+      <a href="/manager_linktree" class="link">&larr; Return to Manager Home</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

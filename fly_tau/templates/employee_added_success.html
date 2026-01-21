@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Employee Added | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card success-card">
+  <h1 class="page-title">Thank you</h1>
+  <p class="subtitle"><strong>{{ name }}</strong> was added to the system.</p>
+
+  <div class="form-actions">
+    <a href="/manager_linktree" class="btn">Return to Manager Home</a>
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,92 @@
+{% extends "base.html" %}
+
+{% block title %}My Bookings | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card bookings-card">
+  <h1 class="page-title">Find my booking</h1>
+  <p class="subtitle">Guest access: view and manage your upcoming flights.</p>
+
+  <form action="/my_bookings" method="POST" class="board-top">
+    <div class="search-box">
+      <input
+        type="email"
+        name="email"
+        placeholder="Enter your email address"
+        required
+        value="{{ searched_email if searched_email else '' }}"
+      >
+    </div>
+    <button type="submit" class="btn">Search</button>
+  </form>
+
+  {% if message %}
+    <div class="msg">{{ message }}</div>
+  {% endif %}
+
+  {% if flights %}
+    <h2 class="section-title">Your active flights</h2>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Booking Code</th>
+            <th>Flight No</th>
+            <th>Route</th>
+            <th>Date &amp; Time</th>
+            <th>Tickets</th>
+            <th>Seats</th>
+            <th>Action</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for flight in flights %}
+          <tr>
+            <td><strong>{{ flight.booking_code }}</strong></td>
+            <td>{{ flight.flight_no }}</td>
+            <td>{{ flight.origin_airport_name }} &#8594; {{ flight.dest_airport_name }}</td>
+            <td class="dt">{{ flight.departure_time }}</td>
+            <td>{{ flight.tickets_count }}</td>
+            <td class="seats">{{ flight.seats or '—' }}</td>
+
+            <td>
+              <!-- Open confirmation modal (no JS) -->
+              <a href="#confirm-cancel-{{ flight.booking_code }}" class="btn btn-danger">Cancel</a>
+
+              <!-- Modal -->
+              <div id="confirm-cancel-{{ flight.booking_code }}" class="modal">
+                <div class="modal-box">
+                  <h3 class="modal-title">Confirm cancellation</h3>
+                  <p class="modal-text">
+                    Are you sure you want to cancel booking
+                    <strong>{{ flight.booking_code }}</strong>?
+                  </p>
+
+                  <div class="modal-actions">
+                    <!-- POST form happens here -->
+                    <form action="{{ url_for('cancel_guest_booking') }}" method="POST" class="inline-form">
+                      <input type="hidden" name="booking_code" value="{{ flight.booking_code }}">
+                      <input type="hidden" name="email" value="{{ request.form.get('email') or searched_email }}">
+                      <button type="submit" class="btn btn-danger">Yes, cancel</button>
+                    </form>
+
+                    <!-- Close modal -->
+                    <a href="#" class="btn">No, go back</a>
+                  </div>
+                </div>
+              </div>
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% endif %}
+
+  <div class="footer-links">
+    <a href="{{ url_for('homepage') }}" class="link">&larr; Back to Home</a>
+  </div>
+</section>
+{% endblock %}

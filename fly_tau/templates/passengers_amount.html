@@ -1,0 +1,35 @@
+{% extends "base.html" %}
+
+{% block title %}Passengers | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card form-card">
+  <h1 class="page-title">Passengers</h1>
+  <p class="subtitle">Select number of passengers (max 5)</p>
+
+  <form action="/passengers_amount/{{ flight_no }}" method="POST" class="form form-narrow">
+    <label for="num_passengers">Number of passengers:</label>
+    <input id="num_passengers" type="number" name="num_passengers" min="1" max="5" value="1" required>
+
+    {% if not session.get('logged_in') %}
+      <div class="info-box" style="margin-top:12px;">
+        Guest booking: please provide contact details.
+      </div>
+
+      <label for="email">Email:</label>
+      <input id="email" type="email" name="email" placeholder="name@example.com" required>
+
+      <label for="first_name">First name:</label>
+      <input id="first_name" type="text" name="first_name" placeholder="First name" required>
+
+      <label for="last_name">Last name:</label>
+      <input id="last_name" type="text" name="last_name" placeholder="Last name" required>
+    {% endif %}
+
+    <div class="form-actions">
+      <button type="submit" class="btn">Select seats</button>
+      <a class="btn btn-ghost" href="/flights_board_customers">Back to flight board</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

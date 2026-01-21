@@ -1,0 +1,224 @@
+{% extends "base.html" %}
+
+{% block title %}Select Seats | FlyTAU{% endblock %}
+
+{% block content %}
+{% set has_business = 'Business' in seat_class_map.values() %}
+{% set has_economy = 'Economy' in seat_class_map.values() %}
+
+<section class="card seats-card center-card center-page">
+  <h1 class="page-title">Select seats</h1>
+  <p class="subtitle">Choose {{ count }} seat{{ 's' if count|int != 1 else '' }} for your flight</p>
+
+  <div class="prices-box">
+    <span class="price-item">
+      <strong>Economy:</strong>
+      {% if has_economy %} ${{ '%.2f'|format(economy_price|default(0)) }}{% else %}—{% endif %}
+    </span>
+
+    <span class="price-item">
+      <strong>Business:</strong>
+      {% if has_business and business_price > 0 %} ${{ '%.2f'|format(business_price|default(0)) }}{% else %}—{% endif %}
+    </span>
+  </div>
+
+  <div class="legend">
+    {% if has_business %}
+      <span class="dot dot-business"></span> Business
+      <span class="sep">|</span>
+    {% endif %}
+    <span class="dot dot-economy"></span> Economy
+    <span class="sep">|</span>
+    <span class="dot dot-occupied"></span> Occupied
+  </div>
+
+  {% if error %}
+    <div class="error-box">{{ error }}</div>
+  {% endif %}
+
+  <form action="/select_seats" method="POST">
+    {% if has_business %}
+      <h3 class="section-title">Business class</h3>
+
+      <div class="table-wrap seats-wrap">
+        <table class="seat-table">
+          <tr>
+            <td></td>
+            <td class="col-h">A</td>
+            <td class="col-h">B</td>
+            <td class="aisle"></td>
+            <td class="col-h">C</td>
+            <td class="col-h">D</td>
+          </tr>
+
+          {% for r in rows %}
+            {% set check_seat = r|string ~ 'A' %}
+            {% if seat_class_map.get(check_seat) == 'Business' %}
+            <tr>
+              <td class="row-num">{{ r }}</td>
+
+              {% set seat_id = r|string ~ 'A' %}
+              <td>
+                {% if seat_id in available_seats %}
+                  <label class="seat-label">
+                    <input type="checkbox" name="seat_choice" value="{{ seat_id }}">
+                    <span class="seat-box business-seat">A</span>
+                  </label>
+                {% else %}
+                  <div class="seat-box occupied">X</div>
+                {% endif %}
+              </td>
+
+              {% set seat_id = r|string ~ 'B' %}
+              <td>
+                {% if seat_id in available_seats %}
+                  <label class="seat-label">
+                    <input type="checkbox" name="seat_choice" value="{{ seat_id }}">
+                    <span class="seat-box business-seat">B</span>
+                  </label>
+                {% else %}
+                  <div class="seat-box occupied">X</div>
+                {% endif %}
+              </td>
+
+              <td class="aisle"></td>
+
+              {% set seat_id = r|string ~ 'C' %}
+              <td>
+                {% if seat_id in available_seats %}
+                  <label class="seat-label">
+                    <input type="checkbox" name="seat_choice" value="{{ seat_id }}">
+                    <span class="seat-box business-seat">C</span>
+                  </label>
+                {% else %}
+                  <div class="seat-box occupied">X</div>
+                {% endif %}
+              </td>
+
+              {% set seat_id = r|string ~ 'D' %}
+              <td>
+                {% if seat_id in available_seats %}
+                  <label class="seat-label">
+                    <input type="checkbox" name="seat_choice" value="{{ seat_id }}">
+                    <span class="seat-box business-seat">D</span>
+                  </label>
+                {% else %}
+                  <div class="seat-box occupied">X</div>
+                {% endif %}
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </table>
+      </div>
+    {% endif %}
+
+    {% if has_economy %}
+      <h3 class="section-title">Economy class</h3>
+
+      <div class="table-wrap seats-wrap">
+        <table class="seat-table">
+          <tr>
+            <td></td>
+            <td class="col-h">A</td>
+            <td class="col-h">B</td>
+            <td class="col-h">C</td>
+            <td class="aisle"></td>
+            <td class="col-h">D</td>
+            <td class="col-h">E</td>
+            <td class="col-h">F</td>
+          </tr>
+
+          {% for r in rows %}
+            {% set check_seat = r|string ~ 'A' %}
+            {% if seat_class_map.get(check_seat) != 'Business' %}
+            <tr>
+              <td class="row-num">{{ r }}</td>
+
+              {% set seat_id = r|string ~ 'A' %}
+              <td>
+                {% if seat_id in available_seats %}
+                  <label class="seat-label">
+                    <input type="checkbox" name="seat_choice" value="{{ seat_id }}">
+                    <span class="seat-box economy-seat">A</span>
+                  </label>
+                {% else %}
+                  <div class="seat-box occupied">X</div>
+                {% endif %}
+              </td>
+
+              {% set seat_id = r|string ~ 'B' %}
+              <td>
+                {% if seat_id in available_seats %}
+                  <label class="seat-label">
+                    <input type="checkbox" name="seat_choice" value="{{ seat_id }}">
+                    <span class="seat-box economy-seat">B</span>
+                  </label>
+                {% else %}
+                  <div class="seat-box occupied">X</div>
+                {% endif %}
+              </td>
+
+              {% set seat_id = r|string ~ 'C' %}
+              <td>
+                {% if seat_id in available_seats %}
+                  <label class="seat-label">
+                    <input type="checkbox" name="seat_choice" value="{{ seat_id }}">
+                    <span class="seat-box economy-seat">C</span>
+                  </label>
+                {% else %}
+                  <div class="seat-box occupied">X</div>
+                {% endif %}
+              </td>
+
+              <td class="aisle"></td>
+
+              {% set seat_id = r|string ~ 'D' %}
+              <td>
+                {% if seat_id in available_seats %}
+                  <label class="seat-label">
+                    <input type="checkbox" name="seat_choice" value="{{ seat_id }}">
+                    <span class="seat-box economy-seat">D</span>
+                  </label>
+                {% else %}
+                  <div class="seat-box occupied">X</div>
+                {% endif %}
+              </td>
+
+              {% set seat_id = r|string ~ 'E' %}
+              <td>
+                {% if seat_id in available_seats %}
+                  <label class="seat-label">
+                    <input type="checkbox" name="seat_choice" value="{{ seat_id }}">
+                    <span class="seat-box economy-seat">E</span>
+                  </label>
+                {% else %}
+                  <div class="seat-box occupied">X</div>
+                {% endif %}
+              </td>
+
+              {% set seat_id = r|string ~ 'F' %}
+              <td>
+                {% if seat_id in available_seats %}
+                  <label class="seat-label">
+                    <input type="checkbox" name="seat_choice" value="{{ seat_id }}">
+                    <span class="seat-box economy-seat">F</span>
+                  </label>
+                {% else %}
+                  <div class="seat-box occupied">X</div>
+                {% endif %}
+              </td>
+            </tr>
+            {% endif %}
+          {% endfor %}
+        </table>
+      </div>
+    {% endif %}
+
+    <div class="form-actions">
+      <button type="submit" class="btn btn-secondary">Proceed to payment</button>
+      <a class="btn btn-ghost" href="{{ url_for('passengers_amount', flight_no=session['current_flight_no']) }}">Go back</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

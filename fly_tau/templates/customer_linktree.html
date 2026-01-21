@@ -1,0 +1,21 @@
+<div class="dashboard-bg">
+
+{% extends "base.html" %}
+
+{% block title %}Customer Home | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card hub-card">
+  <h1 class="page-title">{{ greeting }}, {{ name }}!</h1>
+  <p class="page-subtitle">What would you like to do today?</p>
+
+  <div class="linktree-actions">
+    <a href="/flights_board_customers" class="linktree-btn">View flights</a>
+    <a href="/orders_history" class="linktree-btn">My orders</a>
+  </div>
+</section>
+{% endblock %}
+    <section class="card hub-card">
+    ...
+  </section>
+</div>

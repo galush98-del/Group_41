@@ -1,0 +1,20 @@
+{% extends "base.html" %}
+
+{% block title %}Payment Successful | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card success-card">
+  <h1 class="page-title">Payment successful ✅</h1>
+  <p class="subtitle">Enjoy your vacation{{ " " + name if name else "" }}!</p>
+
+  <div class="form-actions">
+    {% if session.get('logged_in') %}
+      <a href="/orders_history" class="linktree-btn">My orders</a>
+      <a href="/customer_linktree" class="linktree-btn">Return to home page</a>
+    {% else %}
+      <a href="/my_bookings" class="btn">My bookings</a>
+      <a href="/homepage" class="btn btn-secondary">Home</a>
+    {% endif %}
+  </div>
+</section>
+{% endblock %}

@@ -1,0 +1,25 @@
+<div class="dashboard-bg">
+
+
+{% extends "base.html" %}
+
+{% block title %}Manager Home | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card hub-card">
+  <h1 class="page-title">{{ greeting }}, {{ name }}!</h1><br/>
+  <p class="page-subtitle">What would you like to do today?</p>
+
+  <div class="linktree-actions">
+    <a href="/flight_board_managers" class="linktree-btn">View flights</a>
+    <a href="/reports" class="linktree-btn">View reports</a>
+    <a href="/create_flight" class="linktree-btn">Create flight</a>
+    <a href="/purchase_airplane" class="linktree-btn">Add aircraft</a>
+    <a href="/add_employee" class="linktree-btn">Add crew member</a>
+  </div>
+</section>
+{% endblock %}
+    <section class="card hub-card">
+    ...
+  </section>
+</div>

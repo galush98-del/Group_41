@@ -1,0 +1,66 @@
+{% extends "base.html" %}
+
+{% block title %}Add Employee | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card form-card">
+  <h1 class="page-title">Join FlyTAU</h1>
+  <p class="subtitle">Add a new employee</p>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-area">
+        {% for category, message in messages %}
+          <div class="flash {% if category == 'error' %}flash-error{% else %}flash-success{% endif %}">
+            {{ message }}
+          </div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <form action="/add_employee" method="POST" class="form form-narrow">
+
+    <label>ID (9 digits):</label>
+    <input type="text" name="id_employee" required minlength="9" maxlength="9" placeholder="e.g., 123456789">
+
+    <label>First Name (English only):</label>
+    <input type="text" name="name" required placeholder="e.g., John">
+
+    <label>Last Name (English only):</label>
+    <input type="text" name="last_name" required placeholder="e.g., Doe">
+
+    <label>Phone (Format: 05X-XXXXXXX):</label>
+    <input type="text" name="phone_num" required minlength="11" maxlength="11" placeholder="e.g., 054-1234567">
+
+    <label>City:</label>
+    <input type="text" name="city" required placeholder="e.g., Tel Aviv">
+
+    <label>Street:</label>
+    <input type="text" name="street" required placeholder="e.g., Dizengoff">
+
+    <label>House Number:</label>
+    <input type="text" name="house_num" required placeholder="e.g., 12">
+
+    <label>Start Date:</label>
+    <input type="date" name="start_date" required min="{{ today }}">
+
+    <label>Role:</label>
+    <select name="role" required>
+      <option value="pilot">Pilot</option>
+      <option value="flightattendant">Flight Attendant</option>
+    </select>
+
+    <label class="check-row">
+      <input type="checkbox" name="is_certified">
+      Certified for long flights
+    </label>
+
+    <button type="submit" class="btn btn-block">Add to the system</button>
+
+    <div class="footer-links">
+      <a href="/manager_linktree" class="link">&larr; Return to Manager Home</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,105 @@
+{% extends "base.html" %}
+
+{% block title %}Manager Flights Board | FlyTAU{% endblock %}
+
+{% block content %}
+
+<div class="center-page">
+  <br>
+  <h1 class="page-title">Flights Board – Manager View</h1>
+
+  {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+      <div class="flash-area">
+        {% for category, message in messages %}
+          <div class="flash flash-{{ category }}">{{ message }}</div>
+        {% endfor %}
+      </div>
+    {% endif %}
+  {% endwith %}
+
+  <div class="board-actions">
+    <a class="btn btn-secondary" href="/create_flight">Create New Flight +</a>
+  </div>
+</div>
+
+<section class="card board-card center-card">
+
+  <!-- Search – SERVER SIDE ONLY -->
+  <form method="GET" class="board-top">
+    <div class="search-box">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search by flight number, origin, destination or status"
+        value="{{ request.args.get('q','') }}">
+    </div>
+  </form>
+
+  <div class="table-wrap">
+    <table>
+      <tr>
+        <th>Flight No</th>
+        <th>Departure Time</th>
+        <th>Origin</th>
+        <th>Destination</th>
+        <th>Status</th>
+        <th>Actions</th>
+      </tr>
+
+      {% for flight in flights_data %}
+      <tr>
+        <td>{{ flight.flight_id }}</td>
+        <td class="dt">{{ flight.departure_time }}</td>
+        <td>{{ flight.origin_airport }}</td>
+        <td>{{ flight.destination_airport }}</td>
+
+        <td>
+          <span class="status-pill status-{{ flight.status|lower }}">
+            {{ flight.status }}
+          </span>
+        </td>
+
+        <td>
+          {% if flight.status == 'Active' %}
+            <!-- Open modal (no JS) -->
+            <a href="#confirm-cancel-flight-{{ flight.flight_id }}" class="btn btn-danger">
+              Cancel Flight
+            </a>
+
+            <!-- Modal -->
+            <div id="confirm-cancel-flight-{{ flight.flight_id }}" class="modal">
+              <div class="modal-box">
+                <h3 class="modal-title">Confirm flight cancellation</h3>
+                <p class="modal-text">
+                  Are you sure you want to cancel flight
+                  <strong>{{ flight.flight_id }}</strong>?
+                </p>
+
+                <div class="modal-actions">
+                  <form action="{{ url_for('cancel_flight', flight_no=flight.flight_id) }}"
+                        method="POST"
+                        class="inline-form">
+                    <button type="submit" class="btn btn-danger">Yes, cancel</button>
+                  </form>
+
+                  <a href="#" class="btn">No, go back</a>
+                </div>
+              </div>
+            </div>
+          {% else %}
+            <span class="muted">—</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+    </table>
+  </div>
+
+</section>
+
+<div class="footer-links center-page">
+  <a class="link" href="/manager_linktree">Return to Manager Home</a>
+</div>
+
+{% endblock %}

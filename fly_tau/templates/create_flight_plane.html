@@ -1,0 +1,56 @@
+{% extends "base.html" %}
+
+{% block title %}Select Airplane | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card wizard-card">
+  <h1 class="page-title">Select an airplane</h1>
+
+  <div class="info-box">
+    <div><b>Origin:</b> {{ origin }}</div>
+    <div><b>Destination:</b> {{ destination }}</div>
+    <div><b>Date:</b> {{ flight_date }}</div>
+  </div>
+
+  {% if error %}
+    <div class="error-box">{{ error }}</div>
+
+    <div class="form-actions">
+      <a class="btn btn-secondary" href="/purchase_airplane">Purchase airplane</a>
+      <a class="btn btn-ghost" href="/manager_linktree">Return to Manager Home</a>
+    </div>
+
+  {% elif available_planes and (available_planes|length > 0) %}
+
+    <form action="{{ url_for('create_flight_plane') }}" method="POST" class="form form-narrow">
+      <input type="hidden" name="origin" value="{{ origin }}">
+      <input type="hidden" name="destination" value="{{ destination }}">
+      <input type="hidden" name="flight_date" value="{{ flight_date }}">
+
+      <label for="airplane_id">Choose a plane:</label>
+      <select name="airplane_id" id="airplane_id" required>
+        <option value="" disabled selected>-- Select available plane --</option>
+        {% for plane in available_planes %}
+          <option value="{{ plane[0] }}">
+            Plane ID: {{ plane[0] }} {% if plane[1] == 1 %}(Large Jet){% else %}(Small Jet){% endif %}
+          </option>
+        {% endfor %}
+      </select>
+
+      <button type="submit" class="btn btn-block">Continue to pilots selection</button>
+    </form>
+
+  {% else %}
+    <div class="error-box">No airplanes are available for this route and time.</div>
+  {% endif %}
+  <div class="footer-links">
+  <a href="{{ url_for('create_flight_time', origin=origin, destination=destination) }}" class="link">
+    &larr; Back to date & time selection
+  </a>
+  <span class="sep">|</span>
+  <a href="{{ url_for('manager_linktree') }}" class="link">
+    &larr; Return to Manager Home
+  </a>
+</div>
+</section>
+{% endblock %}

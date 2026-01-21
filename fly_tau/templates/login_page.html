@@ -1,0 +1,70 @@
+{% extends "base.html" %}
+
+{% block title %}Login | FlyTAU{% endblock %}
+
+
+{% block content %}
+<div class="auth-page">
+  <div class="auth-card">
+
+    <div class="tabs">
+      <a class="{% if role == 'customer' %}active{% endif %}" href="/login_page?role=customer">Customer Login</a>
+      <span class="sep">|</span>
+      <a class="{% if role == 'manager' %}active{% endif %}" href="/login_page?role=manager">Manager Login</a>
+    </div>
+
+    {% if role == 'customer' %}
+      <h3>Customer Login</h3>
+
+      {% if request.args.get('error') %}
+        <div class="error-box">{{ request.args.get('error') }}</div>
+      {% endif %}
+
+      {% if error_message %}
+        <div class="error-box">{{ error_message }}</div>
+      {% endif %}
+
+      <form action="/login_page" method="post" class="form">
+        <input type="hidden" name="which_form_is_this" value="customer">
+
+        <label>Email:</label>
+        <input type="email" name="email_user" required placeholder="Enter your email">
+
+        <label>Password:</label>
+        <input type="password" name="password_user" required placeholder="Enter your password">
+
+        <input type="submit" value="Login" class="btn-submit">
+      </form>
+
+      <div class="auth-footer">
+        <a class="link" href="/">Return to homepage</a>
+      </div>
+    {% endif %}
+
+    {% if role == 'manager' %}
+      <h3>Manager Access</h3>
+
+      {% if error_message %}
+        <div class="error-box">{{ error_message }}</div>
+      {% endif %}
+
+      <form action="/login_page" method="post" class="form">
+        <input type="hidden" name="which_form_is_this" value="manager">
+
+        <label>Manager ID:</label>
+        <input type="text" name="manager_id" required placeholder="Enter your ID">
+
+        <label>Password:</label>
+        <input type="password" name="password_manager" required placeholder="Enter your password">
+
+        <input type="submit" value="Login" class="btn-submit">
+      </form>
+
+      <div class="auth-footer">
+        <a class="link" href="/">Return to homepage</a>
+      </div>
+    {% endif %}
+
+  </div>
+</div>
+{% endblock %}

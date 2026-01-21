@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>{% block title %}FlyTAU{% endblock %}</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+  <!-- Main CSS -->
+  <link rel="stylesheet" href="{{ url_for('static', filename='css/main.css') }}">
+
+  {% block head %}{% endblock %}
+</head>
+<body>
+
+<header class="topbar">
+  <div class="container topbar-inner">
+
+    <!-- Left: Logo -->
+    <a class="brand" href="/">
+      <img src="{{ url_for('static', filename='images/flytau-logo.png') }}" alt="FlyTAU logo">
+      <div class="brand-title">FlyTAU</div>
+    </a>
+
+    <!-- Right: greeting OR auth buttons -->
+  <div class="topbar-right">
+
+  {% if request.path == '/' %}
+    <a class="topnav-link" href="/my_bookings">My bookings</a>
+  {% endif %}
+
+  {% if topbar_name %}
+    <div class="topbar-greet">
+      {{ topbar_greeting }}, {{ topbar_name }}!
+    </div>
+    <a href="/logout" class="topnav-link topnav-link--danger">Logout</a>
+  {% else %}
+    <a class="topnav-link" href="/login_page">Log in</a>
+    <a class="topnav-link topnav-link--primary" href="/signup_page">Join us</a>
+  {% endif %}
+
+</div>
+
+  </div>
+</header>
+
+<main>
+  {% block content %}{% endblock %}
+</main>
+
+</body>
+</html>

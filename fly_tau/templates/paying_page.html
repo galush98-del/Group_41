@@ -1,0 +1,57 @@
+{% extends "base.html" %}
+
+{% block title %}Complete Booking | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card bookings-card">
+  <h1 class="page-title">Complete your booking</h1>
+
+  <div class="summary-box">
+    <h3 class="section-title">Flight details</h3>
+
+    <div class="summary-grid">
+      <div class="muted">Flight</div>
+      <div><strong>{{ flight.flight_id }}</strong></div>
+
+      <div class="muted">Route</div>
+      <div>{{ flight.origin_airport }} &#8594; {{ flight.destination_airport }}</div>
+
+      <div class="muted">Seats</div>
+      <div>
+        {% for seat in seats %}<span class="pill">{{ seat }}</span>{% endfor %}
+      </div>
+
+      <div class="muted">Total price</div>
+      <div><span class="pill pill-success">{{ total_price }}</span></div>
+    </div>
+  </div>
+
+  <form action="/paying_page" method="POST" class="form form-narrow">
+    <h3 class="section-title">Payment details</h3>
+
+    <label for="credit_card">Credit card number:</label>
+<input
+  id="credit_card"
+  type="text"
+  name="credit_card"
+  inputmode="numeric"
+  autocomplete="cc-number"
+  placeholder="1234 5678 9012 3456"
+  required
+  maxlength="23"
+  pattern="^[0-9]{13,19}$|^([0-9]{4}[- ]?){3}[0-9]{4}$|^[0-9]{15}$"
+  title="Enter a valid credit card number (13–19 digits). You may use spaces or dashes."
+>
+
+    <div class="form-actions">
+      <button type="submit" class="btn">Confirm booking</button>
+      <a class="btn btn-ghost" href="{{ url_for('select_seats') }}">Go back</a>
+    </div>
+{% if error %}
+  <div class="error-box">{{ error }}</div>
+{% endif %}
+
+
+  </form>
+</section>
+{% endblock %}

@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+{% block title %}FlyTAU | Home{% endblock %}
+
+{% block content %}
+
+<section class="hp-hero">
+  <div class="hp-hero__bg"
+       style="background-image:url('{{ url_for('static', filename='images/hero-bg.jpg') }}');">
+  </div>
+  <div class="hp-hero__overlay"></div>
+
+  <div class="hp-hero__content">
+    <div class="container">
+      <h1 class="hp-title">Welcome to FlyTAU!</h1>
+      <p class="hp-subtitle">Your next flight, in a few clicks.</p>
+
+      <!-- CTA with tooltip -->
+      <div class="hp-ctaWrap tip-wrap">
+        <a class="hp-cta"
+           href="/flights_board_customers"
+           title="Search flights, choose seats and complete your booking">
+          Book your flight
+        </a>
+        <span class="tip">
+          Search flights, choose seats and complete your booking
+        </span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- ABOUT SECTION -->
+<section class="hp-about">
+  <div class="container">
+    <h2 class="hp-about__title">What is FlyTAU?</h2>
+    <p class="hp-about__text">
+      FlyTAU is a flight booking and management system developed as an academic
+      project. The platform allows customers to easily book flights and manage
+      reservations, while providing managers with advanced tools for flight,
+      crew, and pricing management.
+    </p>
+  </div>
+</section>
+
+{% endblock %}

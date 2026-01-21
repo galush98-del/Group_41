@@ -1,0 +1,45 @@
+{% extends "base.html" %}
+
+{% block title %}Set Flight Time | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card wizard-card">
+  <h1 class="page-title">Set flight time</h1>
+
+  {% if error %}
+    <div class="error-box">{{ error }}</div>
+  {% endif %}
+
+  <div class="info-box">
+    <div><b>Route:</b> {{ origin }} &#8594; {{ destination }}</div>
+  </div>
+
+  <form
+    action="/create_flight_time?origin={{ origin }}&destination={{ destination }}"
+    method="POST"
+    class="form form-narrow"
+  >
+    <label for="flight_date">Select date &amp; time:</label>
+    <input
+      type="datetime-local"
+      id="flight_date"
+      name="flight_date"
+      min="{{ min_time }}"
+      required
+    >
+
+    <div class="hint">
+      Note: Flights must be scheduled at least <b>3 hours</b> from now.
+    </div>
+
+    <button type="submit" class="btn btn-block">Continue to airplane selection</button>
+
+    <div class="footer-links">
+    <a href="{{ url_for('create_flight') }}" class="link">&larr; Back to route selection</a>
+    <span class="sep">|</span>
+    <a href="{{ url_for('manager_linktree') }}" class="link">&larr; Return to Manager Home</a>
+</div>
+
+  </form>
+</section>
+{% endblock %}

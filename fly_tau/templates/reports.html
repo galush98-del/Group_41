@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Executive Dashboard | FlyTAU{% endblock %}
+
+{% block content %}
+<br>
+<h1 class="page-title page-title--center">
+  Airline executive dashboard
+</h1><br>
+
+<!-- 🔹 Quick navigation (Anchor links) -->
+<nav class="jump-links">
+  <span>Quick navigation:</span>
+  <a href="#revenue">Revenue analysis</a>
+  <a href="#utilization">Fleet utilization</a>
+  <a href="#cancellations">Cancellation rate</a>
+</nav>
+
+<br>
+
+<div class="dashboard-container">
+
+  <!-- 📊 Revenue -->
+  <section id="revenue" class="card chart-card">
+    <div class="chart-title">📊 Revenue analysis breakdown</div>
+    {% if chart_1 %}
+      <img src="{{ chart_1 }}" alt="Revenue Chart" class="chart-img">
+    {% else %}
+      <p class="muted">No revenue data available.</p>
+    {% endif %}
+  </section>
+
+  <!-- ✈️ Utilization -->
+  <section id="utilization" class="card chart-card">
+    <div class="chart-title">✈️ Monthly fleet utilization</div>
+    {% if chart_2 %}
+      <img src="{{ chart_2 }}" alt="Utilization Heatmap" class="chart-img">
+    {% else %}
+      <p class="muted">No flight activity data available.</p>
+    {% endif %}
+  </section>
+
+  <!-- 📉 Cancellations -->
+  <section id="cancellations" class="card chart-card">
+    <div class="chart-title">📉 Monthly Purchase Cancellation Rate</div>
+    {% if chart_3 %}
+      <img
+        src="data:image/png;base64,{{ chart_3 }}"
+        alt="Monthly cancellation rate"
+        class="chart-img"
+      >
+    {% else %}
+      <p class="muted">No cancellation data available.</p>
+    {% endif %}
+  </section>
+
+</div>
+
+<div class="footer-links">
+  <a href="/manager_linktree" class="link">&larr; Back to your homepage</a>
+</div>
+
+{% endblock %}

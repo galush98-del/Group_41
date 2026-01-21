@@ -1,0 +1,19 @@
+{% extends "base.html" %}
+
+{% block title %}Flight Created | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card success-card">
+  <h1 class="page-title">Flight created successfully ✅</h1>
+
+  <div class="info-box" style="text-align:center;">
+    <div class="muted">Flight number</div>
+    <div><span class="pill pill-success">{{ flight_no }}</span></div>
+  </div>
+
+  <div class="form-actions">
+    <a class="btn" href="{{ url_for('manager_linktree') }}">Back to manager home</a>
+    <a class="btn btn-secondary" href="{{ url_for('flight_board_managers') }}">Go to flight board</a>
+  </div>
+</section>
+{% endblock %}

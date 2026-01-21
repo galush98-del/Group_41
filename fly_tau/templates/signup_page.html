@@ -1,0 +1,130 @@
+{% extends "base.html" %}
+
+{% block title %}Sign Up | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card form-card">
+  <h1 class="page-title">Create an account</h1>
+  <p class="subtitle">Please fill in your details to complete registration.</p>
+
+  <form action="/signup_page" method="post" class="form">
+    <table class="form-table">
+      <tr>
+        <td>First Name:</td>
+        <td>
+          <input type="text" name="signup_first_name" value="{{ signup_first_name }}"
+                 pattern="[A-Za-z ]+" title="please enter only English letters"
+                 required placeholder="e.g. John">
+        </td>
+        <td>
+          {% if error_message_name %}
+            <p class="error-text">{{ error_message_name }}</p>
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td>Last Name:</td>
+        <td>
+          <input type="text" name="signup_last_name" value="{{ signup_last_name }}"
+                 pattern="[A-Za-z ]+" title="please enter only English letters"
+                 required placeholder="e.g. Smith">
+        </td>
+        <td>
+          {% if error_message_name %}
+            <p class="error-text">{{ error_message_name }}</p>
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td>Email:</td>
+        <td>
+          <input type="email" name="email_user" value="{{ email_user }}"
+                 required placeholder="name@example.com">
+        </td>
+        <td>
+          {% if error_message_email %}
+            <p class="error-text">{{ error_message_email }}</p>
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td>Phone:</td>
+        <td>
+          <input type="tel" name="phone_number_user" value="{{ phone_1 }}"
+       pattern="^\d(?:-?\d){9}$" maxlength="14"
+       title="Enter exactly 10 digits. Dashes are allowed. Example: 054-123-4567"
+       required placeholder="Primary Phone Number (Required)">
+
+
+          <input type="tel" name="phone_number_user" value="{{ phone_2 }}"
+       pattern="^\d(?:-?\d){9}$" maxlength="14"
+       title="Enter exactly 10 digits. Dashes are allowed."
+       placeholder="Additional Phone (Optional)">
+
+
+          <input type="tel" name="phone_number_user" value="{{ phone_3 }}"
+       pattern="^\d(?:-?\d){9}$" maxlength="14"
+       title="Enter exactly 10 digits. Dashes are allowed."
+       placeholder="Additional Phone (Optional)">
+
+        </td>
+        <td>
+  {% if error_message_phone %}
+    <p class="error-text">{{ error_message_phone }}</p>
+  {% endif %}
+</td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>Passport Code:</td>
+        <td>
+          <input type="text" name="passport_code" value="{{ passport_code }}"
+                 required placeholder="e.g. A12345678">
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>Birth Date:</td>
+        <td>
+          <input type="date" name="birth_date" value="{{ birth_date }}" required>
+        </td>
+        <td>
+          {% if error_message_date %}
+            <p class="error-text">{{ error_message_date }}</p>
+          {% endif %}
+        </td>
+      </tr>
+
+      <tr>
+        <td>Password:</td>
+        <td>
+          <input type="password" name="password_user" required>
+        </td>
+        <td></td>
+      </tr>
+
+      <tr>
+        <td>Confirm Password:</td>
+        <td>
+          <input type="password" name="confirm_password_user" required>
+        </td>
+        <td>
+          {% if error_message_pass %}
+            <p class="error-text">{{ error_message_pass }}</p>
+          {% endif %}
+        </td>
+      </tr>
+    </table>
+
+    <div class="form-actions">
+      <input type="submit" value="Create account" class="btn">
+      <a class="btn btn-ghost" href="/">Return to homepage</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

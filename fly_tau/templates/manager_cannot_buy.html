@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+
+{% block title %}Action Not Allowed | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card alert-card">
+  <h2 class="alert-title">Action not allowed</h2>
+  <p class="muted">Managers are not allowed to purchase flight tickets.</p>
+
+  <div class="form-actions">
+    <a class="btn" href="{{ url_for('manager_linktree') }}">Return to Manager Home</a>
+  </div>
+</section>
+{% endblock %}

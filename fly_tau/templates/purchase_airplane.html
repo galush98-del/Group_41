@@ -1,0 +1,63 @@
+{% extends "base.html" %}
+
+{% block title %}Purchase Airplane | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card form-card">
+  <h1 class="page-title">Purchase airplane</h1>
+  <p class="subtitle">Enter the airplane details below.</p>
+
+  {% if error_message %}
+    <div class="error-box">{{ error_message }}</div>
+  {% endif %}
+
+  <form action="{{ url_for('add_new_airplane') }}" method="post" class="form form-narrow">
+    <label for="airplane_id">Airplane ID</label>
+    <input
+      type="text"
+      id="airplane_id"
+      name="airplane_id"
+      value="{{ airplane_id or '' }}"
+      required
+      maxlength="4"
+      minlength="4"
+      pattern="[A-Z][0-9]{3}"
+      title="Airplane ID must be exactly 1 uppercase English letter followed by 3 digits (e.g., D400)."
+      placeholder="e.g. D400"
+      autocomplete="off"
+    >
+    <div class="hint">Must be unique.</div>
+
+    <label for="purchase_date">Purchase date</label>
+    <input
+      type="date"
+      id="purchase_date"
+      name="purchase_date"
+      value="{{ purchase_date or '' }}"
+      required
+    >
+
+    <label for="size">Airplane size</label>
+    <select id="size" name="size" required>
+      <option value="" disabled {% if not size and size != 0 %}selected{% endif %}>-- Select size --</option>
+      <option value="0" {% if size == 0 or size == '0' %}selected{% endif %}>Small</option>
+      <option value="1" {% if size == 1 or size == '1' %}selected{% endif %}>Large</option>
+    </select>
+    <div class="hint">Small airplanes have Economy only. Large airplanes have Economy + Business.</div>
+
+    <label for="manufacturer">Manufacturer</label>
+    <select id="manufacturer" name="manufacturer" required>
+      <option value="" disabled {% if not manufacturer %}selected{% endif %}>-- Select manufacturer --</option>
+      <option value="Boeing" {% if manufacturer == 'Boeing' %}selected{% endif %}>Boeing</option>
+      <option value="Airbus" {% if manufacturer == 'Airbus' %}selected{% endif %}>Airbus</option>
+      <option value="Dassault" {% if manufacturer == 'Dassault' %}selected{% endif %}>Dassault</option>
+    </select>
+
+    <button type="submit" class="btn btn-block">Add airplane to the system</button>
+
+    <div class="footer-links">
+      <a href="/manager_linktree" class="link">&larr; Return to Manager Home</a>
+    </div>
+  </form>
+</section>
+{% endblock %}

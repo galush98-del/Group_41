@@ -1,0 +1,68 @@
+{% extends "base.html" %}
+
+{% block title %}Select Pilots | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card wizard-card">
+  <h1 class="page-title">Select flight crew</h1>
+  <p class="subtitle">Step: pilots selection</p>
+
+  <div class="info-box">
+    <strong>Requirement:</strong>
+    Please select exactly <span class="info-number">{{ required_count }}</span> pilots.
+  </div>
+
+  {% if error %}
+    <div class="error-box">{{ error }}</div>
+  {% endif %}
+
+  <form
+    action="{{ url_for('create_flight_pilots',
+      origin=origin,
+      destination=destination,
+      flight_date=flight_date,
+      airplane_id=airplane_id) }}"
+    method="POST"
+    class="form form-narrow"
+  >
+    <div class="picker-list">
+      {% if available_pilots %}
+        {% for pilot in available_pilots %}
+          <label class="picker-row">
+            <input type="checkbox" name="pilot_ids" value="{{ pilot[0] }}">
+            <div class="picker-meta">
+              <div class="picker-name">{{ pilot[1] }} {{ pilot[2] }}</div>
+
+              {% if pilot[3] == 1 %}
+                <span class="badge certified">Certified</span>
+              {% else %}
+                <span class="badge not-certified">Not certified</span>
+              {% endif %}
+            </div>
+          </label>
+        {% endfor %}
+      {% else %}
+        <div class="empty-state">
+          <p class="muted">No pilots found available at {{ origin }}.</p>
+        </div>
+      {% endif %}
+    </div>
+
+    {% if available_pilots %}
+      <button type="submit" class="btn btn-block">Continue to attendants selection</button>
+    {% endif %}
+
+  <div class="footer-links">
+  <a href="{{ url_for('create_flight_plane',
+                      origin=origin,
+                      destination=destination,
+                      flight_date=flight_date) }}" class="link">
+    &larr; Back to airplane selection
+  </a>
+  <span class="sep">|</span>
+  <a href="/manager_linktree" class="link">&larr; Return to Manager Home</a>
+</div>
+
+  </form>
+</section>
+{% endblock %}

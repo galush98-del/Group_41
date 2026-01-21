@@ -1,0 +1,134 @@
+{% extends "base.html" %}
+
+{% block title %}Orders History | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card bookings-card center-card center-page">
+  <h1 class="page-title">My booking history</h1>
+
+  {% if message %}
+    <div class="msg">INFO: {{ message }}</div>
+  {% endif %}
+
+  <form method="GET" class="board-top">
+    <div class="search-box">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search by flight no, status (Active/Cancel), origin..."
+        value="{{ request.args.get('q','') }}"
+      >
+    </div>
+    <button type="submit" class="btn">Search</button>
+
+    {% if request.args.get('q') %}
+      <a class="btn btn-ghost" href="{{ url_for('orders_history') }}">Clear</a>
+    {% endif %}
+  </form>
+
+  {% if orders_data %}
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr>
+            <th>Booking Code</th>
+            <th>Flight No</th>
+            <th>Route</th>
+            <th>Departure</th>
+            <th>Tickets</th>
+            <th>Seats</th>
+            <th>Status</th>
+            <th>Actions</th>
+          </tr>
+        </thead>
+
+        <tbody>
+          {% for order in orders_data %}
+          <tr>
+            <td>{{ order.booking_code }}</td>
+            <td>{{ order.flight_no }}</td>
+            <td>{{ order.origin_airport_name }} &#8594; {{ order.dest_airport_name }}</td>
+            <td class="dt">{{ order.departure_time }}</td>
+            <td>{{ order.tickets_count }}</td>
+            <td class="seats">{{ order.seats or '—' }}</td>
+
+            <!-- Status -->
+            <td>
+              {% set raw = (order.status or '') %}
+              {% set key = raw|lower|replace(' ', '') %}
+
+              {% if key == 'cancelcustomer' %}
+                {% set display = 'Cancelled by customer' %}
+                {% set css = 'cancelled' %}
+              {% elif key == 'cancelled' %}
+                {% set display = 'Cancelled' %}
+                {% set css = 'cancelled' %}
+              {% elif key == 'active' %}
+                {% set display = 'Active' %}
+                {% set css = 'active' %}
+              {% elif key == 'completed' %}
+                {% set display = 'Completed' %}
+                {% set css = 'completed' %}
+              {% else %}
+                {% set display = raw %}
+                {% set css = key %}
+              {% endif %}
+
+              <span class="status-pill status-{{ css }}">
+                {{ display }}
+              </span>
+            </td>
+
+            <!-- Actions -->
+            <td>
+              {% if (order.status or '')|lower == 'active' %}
+                <!-- Open modal -->
+                <a href="#confirm-cancel-{{ order.booking_code }}" class="btn btn-danger">
+                  Cancel booking
+                </a>
+
+                <!-- Modal -->
+                <div id="confirm-cancel-{{ order.booking_code }}" class="modal">
+                  <div class="modal-box">
+                    <h3 class="modal-title">Confirm cancellation</h3>
+                    <p class="modal-text">
+                      Are you sure you want to cancel booking
+                      <strong>{{ order.booking_code }}</strong>?
+                    </p>
+
+                    <div class="modal-actions">
+                      <form
+                        action="{{ url_for('cancel_order', booking_code=order.booking_code) }}"
+                        method="POST"
+                        class="inline-form"
+                      >
+                        <button type="submit" class="btn btn-danger">
+                          Yes, cancel
+                        </button>
+                      </form>
+
+                      <a href="#" class="btn">No, go back</a>
+                    </div>
+                  </div>
+                </div>
+              {% else %}
+                <span class="muted">—</span>
+              {% endif %}
+            </td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+  {% else %}
+    <div class="empty-state">
+      <p class="muted">No bookings found matching your search.</p>
+      <a class="link" href="{{ url_for('orders_history') }}">Clear search</a>
+    </div>
+  {% endif %}
+
+  <div class="footer-links">
+    <a href="{{ url_for('customer_linktree') }}" class="link">&larr; Return to homepage</a>
+  </div>
+</section>
+{% endblock %}

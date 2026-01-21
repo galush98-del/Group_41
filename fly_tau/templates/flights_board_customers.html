@@ -1,0 +1,101 @@
+{% extends "base.html" %}
+
+{% block title %}Flights Board | FlyTAU{% endblock %}
+
+{% block content %}
+
+<div class="center-page">
+    <br>
+  <h1 class="page-title">Flights Board</h1>
+</div>
+
+<section class="card board-card center-card">
+
+  <!-- Search (NO JS): sends GET with ?q=... -->
+  <form method="GET" class="board-top">
+    <div class="search-box">
+      <input
+        type="text"
+        name="q"
+        placeholder="Search by flight number, origin or destination..."
+        value="{{ request.args.get('q','') }}"
+      >
+    </div>
+
+    <button class="btn" type="submit">Search</button>
+
+    {% if request.args.get('q') %}
+      <a class="btn btn-ghost" href="{{ url_for('flights_board_customers') }}">Clear</a>
+    {% endif %}
+  </form>
+
+  <div class="table-wrap">
+    <table>
+      <tr>
+        <th>Flight No</th>
+        <th>Departure</th>
+        <th>Origin</th>
+        <th>Destination</th>
+        <th>Status</th>
+        <th>Order</th>
+      </tr>
+
+      {% for flight in flights_data %}
+      <tr>
+        <td>{{ flight.flight_id }}</td>
+        <td class="dt">{{ flight.departure_time }}</td>
+        <td>{{ flight.origin_airport }}</td>
+        <td>{{ flight.destination_airport }}</td>
+
+        <td>
+          {% set s = flight.status %}
+          <span class="status-pill
+            {% if s == 'Active' %}status-active
+            {% elif s == 'Full' %}status-full
+            {% elif s == 'Cancelled' %}status-cancelled
+            {% elif s == 'Completed' %}status-completed
+            {% endif %}
+          ">
+            {{ s }}
+          </span>
+        </td>
+
+        <td>
+          {% if flight.status == 'Active' %}
+            <a class="order-link" href="{{ url_for('passengers_amount', flight_no=flight.flight_id) }}">
+              Book this flight
+            </a>
+          {% elif flight.status == 'Full' %}
+            <span class="muted">Full</span>
+          {% elif flight.status == 'Completed' %}
+            <span class="muted">Departed</span>
+          {% else %}
+            <span class="muted">Unavailable</span>
+          {% endif %}
+        </td>
+      </tr>
+      {% endfor %}
+
+      {% if not flights_data %}
+      <tr>
+        <td colspan="6" class="muted">No flights found.</td>
+      </tr>
+      {% endif %}
+    </table>
+  </div>
+
+</section>
+
+<div class="footer-links center-page">
+  {% if session.get('role') == 'customer' %}
+    <a class="link" href="{{ url_for('customer_linktree') }}">Return to your homepage</a>
+  {% elif session.get('role') == 'manager' %}
+    <a class="link" href="{{ url_for('manager_linktree') }}">Return to manager home</a>
+  {% elif session.get('logged_in') %}
+    <a class="link" href="{{ url_for('customer_linktree') }}">Return to homepage</a>
+  {% else %}
+    <a class="link" href="{{ url_for('homepage') }}">Return to homepage</a>
+  {% endif %}
+</div>
+
+{% endblock %}

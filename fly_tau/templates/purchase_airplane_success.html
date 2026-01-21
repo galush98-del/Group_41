@@ -1,0 +1,33 @@
+{% extends "base.html" %}
+
+{% block title %}Airplane Purchased | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card success-card">
+  <h1 class="page-title">Airplane purchased ✅</h1>
+
+  <div class="msg" style="background:#d4edda; color:#155724; border-color:#c3e6cb;">
+    The airplane was added successfully.
+  </div>
+
+  <div class="summary-box">
+    <div class="summary-grid">
+      <div class="muted">Airplane ID</div>
+      <div><strong>{{ airplane_id }}</strong></div>
+
+      <div class="muted">Purchase date</div>
+      <div>{{ purchase_date }}</div>
+
+      <div class="muted">Size</div>
+      <div>{{ size_label }}</div>
+
+      <div class="muted">Manufacturer</div>
+      <div>{{ manufacturer }}</div>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <a class="btn" href="{{ url_for('manager_linktree') }}">Return to manager home</a>
+  </div>
+</section>
+{% endblock %}

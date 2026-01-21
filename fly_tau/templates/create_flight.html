@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+
+{% block title %}Create New Flight | FlyTAU{% endblock %}
+
+{% block content %}
+<section class="card wizard-card">
+  <h1 class="page-title">Create new flight</h1>
+  <p class="subtitle">Step 1: choose flight route</p>
+
+  {% if route_error %}
+    <div class="error-box">{{ route_error }}</div>
+  {% endif %}
+
+  <form action="/create_flight" method="POST" class="form form-narrow">
+
+    <label for="origin">Origin airport:</label>
+    <input
+      id="origin"
+      name="origin"
+      list="airports_list"
+      required
+      placeholder="Start typing origin..."
+      value="{{ selected_origin or '' }}"
+      autocomplete="off"
+    >
+
+    <label for="destination">Destination airport:</label>
+    <input
+      id="destination"
+      name="destination"
+      list="airports_list"
+      required
+      placeholder="Start typing destination..."
+      value="{{ selected_destination or '' }}"
+      autocomplete="off"
+    >
+
+    <datalist id="airports_list">
+      {% for airport in airports %}
+        {% set name = airport['airport_name'] %}
+        <option value="{{ name }}"></option>
+      {% endfor %}
+    </datalist>
+
+    <button type="submit" class="btn btn-block">Continue to date & time selection</button>
+
+    <div class="footer-links">
+      <a href="/manager_linktree" class="link">&larr; Return to Manager Home</a>
+    </div>
+  </form>
+</section>
+{% endblock %}
